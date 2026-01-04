@@ -9,9 +9,9 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'prefix'     => config('route.route.prefix'),
-    'namespace'  => config('route.route.namespace') ,
-    'middleware' => config('route.route.middleware'),
+    'prefix'     => config('content.route.prefix'),
+    'namespace'  => config('content.route.namespace') ,
+    'middleware' => config('content.route.middleware'),
 ], function ($router) {
     Route::prefix('/article')->group(function(){
         Route::get('/list',[Cheney\Content\Http\Controllers\ArticleController::class,'lists']);

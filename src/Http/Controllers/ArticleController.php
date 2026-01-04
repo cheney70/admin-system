@@ -5,6 +5,7 @@ namespace Cheney\Content\Http\Controllers;
 use Illuminate\Http\Request;
 use Cheney\Content\Http\Services\ArticleService;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Routing\Controller;
 
 class ArticleController extends Controller
 {

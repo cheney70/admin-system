@@ -1,5 +1,5 @@
 {
-    "name": "cheney/order",
+    "name": "cheney/content",
     "autoload": {
         "psr-4": {
             "Cheney\\Content\\": "src/"

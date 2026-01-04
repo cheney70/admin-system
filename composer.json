@@ -6,10 +6,10 @@
         }
     },
   "license": "MIT",
-    "require": {
-        "php": "^7.2.5|^8.0"        
-    },
-    "authors": [
+  "require": {
+    "php": "^7.2.5|^8.0"
+  },
+  "authors": [
         {
             "name": "cheney",
             "email": "cheney70@qq.com"

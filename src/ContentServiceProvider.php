@@ -25,6 +25,12 @@ class ContentServiceProvider extends ServiceProvider{
             );
             return new Connection($app["config"]->get("content"));
         });
+
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations'); // 发现迁移
+        // 如果需要发布迁移文件到主应用，则需要定义发布组
+        $this->publishes([
+            __DIR__.'/../database/migrations' => database_path('migrations'),
+        ], 'cheney-package-migrations');
     }
 
     /**
@@ -38,13 +44,8 @@ class ContentServiceProvider extends ServiceProvider{
         view()->composer('view', function () {
             //
         });
-
         //加载路由文件
-        $this->loadRoutesFrom(__DIR__.'/routes.php');
-
-         //数据库迁移
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-
+        $this->loadRoutesFrom(__DIR__.'/../routes.php');
         /*
         $this->publishes([
             __DIR__.'/../database/migrations/' => database_path('migrations')

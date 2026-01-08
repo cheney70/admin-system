@@ -3,7 +3,7 @@ namespace Cheney\Content\Http\Services;
 
 use App\Exceptions\FileNotExistException;
 use Cheney\Content\Http\Constants\CommonStatusConstant;
-use  Cheney\Content\Http\ArticleTypes;
+use Cheney\Content\Http\Models\Categorys;
 use Carbon\Carbon;
 
 /**
@@ -12,26 +12,35 @@ use Carbon\Carbon;
  * Date: 2020-1-4
  * Time: 下午3:08
  */
-class ArticleTypeService
+class CategoryService
 {
     /**
      * @return void
      */
-    public function getArticleTypeList($params){
-        $model = ArticleTypes::query();
-        $model ->where('status',CommonStatusConstant::CONSTANT_STATUS_COMMON_ENABLE);
+    public function getCategorys($params){
+        $model = Categorys::query();
+        $model ->where('status',1)->where('parent_id',0);
+        if (isset($params['type']) && !empty($params['type'])){
+            $model ->where('type',$params['type']);
+        }
         if (isset($params['Id']) && !empty($params['Id'])){
             $model ->where('id',$params['Id']);
         }
+
+        $model -> with('children')
+            ->orderBy('level','asc');
+
         $orderBy   = isset($params['orderBy']) ? $params['orderBy'] : 'id';
         $orderSort = isset($params['byAsc']) ? 'ASC' : 'DESC';
         $model->orderBy($orderBy,$orderSort);
+
         if(isset($params['groupBy']) && $params['groupBy']){
             $model->groupBy($params['groupBy']);
         }
         if(! $model->exists()){
             return false;
         }
+			
         if(isset($params['page_num']) && $params['page_num']){
             $page    = isset($params['page']) ? $params['page'] : 1;
             $result = $model->paginate($params['page_num'],['*'],'page',$page);

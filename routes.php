@@ -19,9 +19,9 @@ Route::group([
         Route::get('/detail/{id}',[Cheney\Content\Http\Controllers\ArticleController::class,'detail']);
     });
 
-    Route::prefix('/article-type')->group(function(){
-        Route::get('/list',[Cheney\Content\Http\Controllers\ArticleTypeController::class,'lists']);
-        Route::get('/detail/{id}',[Cheney\Content\Http\Controllers\ArticleTypeController::class,'detail']);
+    Route::prefix('/category')->group(function(){
+        Route::get('/list',[Cheney\Content\Http\Controllers\CategoryController::class,'lists']);
+        Route::get('/detail/{id}',[Cheney\Content\Http\Controllers\CategoryController::class,'detail']);
     });
 });
 

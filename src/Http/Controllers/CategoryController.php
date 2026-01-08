@@ -3,20 +3,20 @@
 namespace Cheney\Content\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Cheney\Content\Http\Services\ArticleTypeService;
+use Cheney\Content\Http\Services\CategoryService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Routing\Controller;
 
-class ArticleTypeController extends Controller
+class CategoryController extends Controller
 {
     /**
      * @var ArticleTypeService
      */
     private $service;
 
-    public function __construct(ArticleTypeService $articleService)
+    public function __construct(CategoryService $categoryService)
     {
-        $this->service = $articleService;
+        $this->service = $categoryService;
     }
 
     /**
@@ -41,11 +41,18 @@ class ArticleTypeController extends Controller
         $inputs = $request->only('Option','page','page_num');
         try{
             $inputs['page_limit'] = isset($inputs['page_num']) ? $inputs['page_num'] : 10;
-            $result = $this->service ->getArticleTypeList($inputs);
-            if(!$result){
-                return self::parametersIllegal("没有数据");
-            }
-            return self::success($result);
+            $result = $this->service ->getCategorys($inputs);
+
+            $message = !$result ? "没有数据": "成功";
+            $msgCode = !$result ? "20000": "100000";
+            $result = [
+                'msg_code'    => $msgCode,
+                'message'     => $message,
+                'response'    => $result,
+                'server_time' => time()
+            ];
+            return response()->json($result);
+
         }catch (\Exception $e){
             return self::error($e->getCode(),$e->getMessage());
         }
@@ -70,10 +77,16 @@ class ArticleTypeController extends Controller
     {
         try{
             $result = $this->service ->getById($id);
-            if(!$result){
-                return self::parametersIllegal("没有数据");
-            }
-            return self::success($result);
+
+            $message = !$result ? "没有数据": "成功";
+            $msgCode = !$result ? "20000": "100000";
+            $result = [
+                'msg_code'    => $msgCode,
+                'message'     => $message,
+                'response'    => $result,
+                'server_time' => time()
+            ];
+            return response()->json($result);
         }catch (\Exception $e){
             return self::error($e->getCode(),$e->getMessage());
         }

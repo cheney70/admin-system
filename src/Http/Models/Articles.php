@@ -35,7 +35,7 @@ class Articles extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function acticleType(){
-        return $this->belongsTo(ArticleTypes::class,'type_id','id');
+    public function category(){
+        return $this->belongsTo(Categorys::class,'type_id','id');
     }
 }

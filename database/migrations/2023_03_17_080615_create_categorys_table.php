@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateArticleTypesTable extends Migration
+class CreateCategorysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateArticleTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('types', function (Blueprint $table) {
+        Schema::create('categorys', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string("name")->default('')->comment("分类名称");
+            $table->smallInteger("type")->default('1')->comment("类型，1产品分类，2文章分类");
+            $table->smallInteger("level")->default('0')->comment("等级：1一级，2二级，3三级");
             $table->bigInteger("parent_id")->default('')->comment("父id");
             $table->string("sign")->default('')->comment("类型标识");
             $table->string("icon")->default('')->comment("分类图标");
@@ -33,6 +35,6 @@ class CreateArticleTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('types');
+        Schema::dropIfExists('categorys');
     }
 }

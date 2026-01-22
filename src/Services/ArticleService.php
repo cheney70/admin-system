@@ -1,9 +1,10 @@
 <?php
-namespace Cheney\Content\Http\Services;
+namespace Cheney\Content\Services;
 
 use App\Exceptions\FileNotExistException;
-use Cheney\Content\Http\Models\Articles;
+use Cheney\Content\Models\Articles;
 use Carbon\Carbon;
+use Cheney\Content\Services\BaseService;
 
 /**
  * Created by PhpStorm.
@@ -11,8 +12,14 @@ use Carbon\Carbon;
  * Date: 2020-1-4
  * Time: 下午3:08
  */
-class ArticleService
-{
+class ArticleService  extends BaseService{
+    /**
+     *
+     */
+    public function __construct()
+    {
+        parent::__construct(Articles::class);
+    }
     /**
      * @return void
      */

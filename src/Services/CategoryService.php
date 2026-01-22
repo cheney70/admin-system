@@ -1,9 +1,8 @@
 <?php
-namespace Cheney\Content\Http\Services;
+namespace Cheney\Content\Services;
 
 use App\Exceptions\FileNotExistException;
-use Cheney\Content\Http\Constants\CommonStatusConstant;
-use Cheney\Content\Http\Models\Categorys;
+use Cheney\Content\Models\Categorys;
 use Carbon\Carbon;
 
 /**
@@ -12,8 +11,12 @@ use Carbon\Carbon;
  * Date: 2020-1-4
  * Time: 下午3:08
  */
-class CategoryService
+class CategoryService extends BaseService
 {
+    public function __construct()
+    {
+        parent::__construct(Categorys::class);
+    }
     /**
      * @return void
      */

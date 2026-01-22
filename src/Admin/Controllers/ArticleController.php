@@ -1,6 +1,6 @@
 <?php
 
-namespace Cheney\Content\Http\Controllers;
+namespace Cheney\Content\Admin\Controllers;
 
 use Illuminate\Http\Request;
 use Cheney\Content\Services\ArticleService;
@@ -19,6 +19,18 @@ class ArticleController extends Controller
     public function __construct(ArticleService $articleService)
     {
         $this->service = $articleService;
+    }
+
+    public function create($data){
+
+    }
+
+    public function delete(int $id){
+
+    }
+
+    public function update($id , $data){
+
     }
 
     /**
@@ -40,6 +52,7 @@ class ArticleController extends Controller
      */
     public function lists(Request $request)
     {
+        die("dsfsdfs");
         $inputs = $request->only('TypeId','page','page_num');
         $validator = Validator::make($inputs, [
             'Option'     => ['required']

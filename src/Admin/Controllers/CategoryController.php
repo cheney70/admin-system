@@ -1,6 +1,6 @@
 <?php
 
-namespace Cheney\Content\Http\Controllers;
+namespace Cheney\Content\Admin\Controllers;
 
 use Illuminate\Http\Request;
 use Cheney\Content\Services\CategoryService;
@@ -19,6 +19,18 @@ class CategoryController extends Controller
     public function __construct(CategoryService $categoryService)
     {
         $this->service = $categoryService;
+    }
+
+    public function create($data){
+
+    }
+
+    public function delete(int $id){
+
+    }
+
+    public function update($id , $data){
+
     }
 
     /**

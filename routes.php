@@ -25,3 +25,35 @@ Route::group([
     });
 });
 
+Route::group([
+    'prefix'     => config('content.route.admin_prefix'),
+    'namespace'  => config('content.route.admin_namespace') ,
+], function ($router) {
+    $router-> prefix('/login')->group(function(){
+        Route::post('/',[Cheney\Content\Admin\Controllers\loginController::class,'login']);
+        Route::get('/cachekey',[Cheney\Content\Admin\Controllers\loginController::class,'cacheKey']);
+
+    });
+
+    $router->middleware( config('content.route.admin_middleware'))
+        -> prefix('/')->group(function(){
+            Route::get('/list',[Cheney\Content\Admin\Controllers\AdminController::class,'lists']);
+            Route::get('/detail/{id}',[Cheney\Content\Admin\Controllers\AdminController::class,'detail']);
+        });
+
+    Route::prefix('/article')->group(function(){
+        Route::post('/create',[Cheney\Content\Admin\Controllers\ArticleController::class,'create']);
+        Route::delete('/delete',[Cheney\Content\Admin\Controllers\ArticleController::class,'delete']);
+        Route::post('/update',[Cheney\Content\Admin\Controllers\ArticleController::class,'update']);
+        Route::get('/list',[Cheney\Content\Admin\Controllers\ArticleController::class,'lists']);
+        Route::get('/detail/{id}',[Cheney\Content\Admin\Controllers\ArticleController::class,'detail']);
+    });
+
+    Route::prefix('/category')->group(function(){
+        Route::post('/create',[Cheney\Content\Admin\Controllers\CategoryController::class,'create']);
+        Route::delete('/delete',[Cheney\Content\Admin\Controllers\CategoryController::class,'delete']);
+        Route::post('/update',[Cheney\Content\Admin\Controllers\CategoryController::class,'update']);
+        Route::get('/list',[Cheney\Content\Admin\Controllers\CategoryController::class,'lists']);
+        Route::get('/detail/{id}',[Cheney\Content\Admin\Controllers\CategoryController::class,'detail']);
+    });
+});

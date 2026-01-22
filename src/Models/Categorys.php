@@ -1,6 +1,6 @@
 <?php
 
-namespace Cheney\Content\Http\Models;
+namespace Cheney\Content\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

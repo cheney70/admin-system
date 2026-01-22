@@ -1,6 +1,6 @@
 <?php
 
-namespace Cheney\Contnet\Http\Models;
+namespace Cheney\Contnet\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

@@ -3,14 +3,18 @@
 namespace Cheney\Content\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-class AdminUsers extends Model
+/**
+ * Class Menu.
+ *
+ * @property int $id
+ *
+ * @method where($parent_id, $id)
+ */
+class Menu extends Model
 {
-    protected $table= 'admin_users';
+    protected $table= 'admin_menus';
     use SoftDeletes;
-
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -24,24 +28,17 @@ class AdminUsers extends Model
      * @var array
      */
     protected $casts = [];
-
     /**
-     * A user has and belongs to many roles.
+     * A Menu belongs to many roles.
      *
      * @return BelongsToMany
      */
     public function roles()
     {
-        return $this->belongsToMany(Role::class, RoleUsers::class, 'user_id', 'role_id');
-    }
+        $pivotTable = config('admin.database.role_menu_table');
 
-    /**
-     * A User has and belongs to many permissions.
-     *
-     * @return BelongsToMany
-     */
-    public function permissions()
-    {
-        return $this->belongsToMany(Permission::class, AdminPermission::class, 'user_id', 'permission_id');
+        $relatedModel = config('admin.database.roles_model');
+
+        return $this->belongsToMany($relatedModel, $pivotTable, 'menu_id', 'role_id');
     }
 }

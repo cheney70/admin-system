@@ -27,7 +27,11 @@ class BaseService
      */
     public function create($data)
     {
-        return $this->model::create($data);
+       try{
+           return $this->model:: create($data);
+       }catch (\Exception $e){
+           echo $e->getMessage();
+       }
     }
 
     /**
@@ -103,12 +107,13 @@ class BaseService
      * @return mixed
      */
     protected function updateData($model,$setData){
-        if(isset($setData['updated_by']) && !empty($setData['updated_by'])){
-            $model->updated_by = $setData['updated_by'];
+        try{
+            $setData['updated_at'] = Carbon::now();
+            $model->update($setData);
+            return $model;
+        }catch (\Exception $e){
+            return $e->getMessage();
         }
-        $model->updated_at   = Carbon::now();
-        $model->save();
-        return $model;
     }
 
     /**
@@ -175,7 +180,7 @@ class BaseService
      * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function getParam(Array $params,$with=null) {
-        $model = $this->model::query();
+        $model = $this->model:: query();
         if(!is_null($with)){
             $model->with($with);
         }

@@ -4,6 +4,7 @@ namespace Cheney\Content\Middleware;
 
 use Closure;
 use Cheney\Content\Services\AdminService;
+use Illuminate\Support\Facades\Log;
 
 class AdminAuth
 {
@@ -21,14 +22,14 @@ class AdminAuth
      */
     public function handle($request, Closure $next)
     {
-         if(!$request->header('token')){
-            abort('401','ÇëµÇÂ¼£¡');
+         if(!$request->header('Authorization')){
+            abort('401','ç™»å½•å¤±è´¥');
         }
-        $token = $request->header('token');
+        $token = $request->header('Authorization');
         //Log::info("token=".json_encode($token)."-------");
         $user = $this->user->getTokenByAdminUser($token);
         if(! $user){
-            abort('401','ÇëµÇÂ¼£¡');
+            abort('401','ç™»å½•å¤±è´¥');
         }
         Log::info("user=".json_encode($user)."-------");
         app()->singleton('admin', function() use ($user){

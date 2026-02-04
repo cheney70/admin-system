@@ -24,6 +24,8 @@ class Articles extends Model
      */
     protected $casts = [];
 
+    protected $guarded = [];
+
     public function getContentAttribute($pictures)
     {
         $pattern="/<[img|IMG].*?src=[\'|\"](.*?(?:[\.gif|\.jpg]))[\'|\"].*?[\/]?>/";

@@ -2,7 +2,7 @@
 namespace Cheney\Content\Services;
 
 use App\Exceptions\FileNotExistException;
-use Cheney\Content\Models\Articles;
+use Cheney\Contnet\Models\Articles;
 use Carbon\Carbon;
 use Cheney\Content\Services\BaseService;
 
@@ -48,19 +48,4 @@ class ArticleService  extends BaseService{
         }
         return $result;
     }
-
-    /**
-     * @param Int $id
-     * @return mixed
-     */
-    public function getById($id,$with=null,$col='*') {
-        $model = Articles::query();
-        if(!is_null($with)){
-            $result = $model::with($with)->selectRaw($col)->findOrFail($id);
-        }else{
-            $result = $model::selectRaw($col)->findOrFail($id);
-        }
-        return $result;
-    }
-
 }

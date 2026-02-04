@@ -3,12 +3,12 @@
 namespace Cheney\Content\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class AdminUsers extends Model
+class Permission extends Model
 {
-    protected $table= 'admin_users';
+
+    protected $table = 'admin_permissions';
     use SoftDeletes;
 
     /**
@@ -26,22 +26,12 @@ class AdminUsers extends Model
     protected $casts = [];
 
     /**
-     * A user has and belongs to many roles.
+     * Permission belongs to many roles.
      *
      * @return BelongsToMany
      */
     public function roles()
     {
-        return $this->belongsToMany(Role::class, RoleUsers::class, 'user_id', 'role_id');
-    }
-
-    /**
-     * A User has and belongs to many permissions.
-     *
-     * @return BelongsToMany
-     */
-    public function permissions()
-    {
-        return $this->belongsToMany(Permission::class, AdminPermission::class, 'user_id', 'permission_id');
+        return $this->belongsToMany(Role::class, RolePermission::class, 'permission_id', 'role_id');
     }
 }

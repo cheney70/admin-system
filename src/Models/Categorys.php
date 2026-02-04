@@ -5,7 +5,7 @@ namespace Cheney\Content\Models;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Cheney\Contnet\Datatase\Models\Articles;
+use Cheney\Contnet\Models\Articles;
 
 class Categorys extends Model
 {
@@ -25,6 +25,8 @@ class Categorys extends Model
      * @var array
      */
     protected $casts = [];
+
+    protected $guarded = [];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

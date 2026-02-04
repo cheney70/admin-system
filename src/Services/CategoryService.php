@@ -52,5 +52,4 @@ class CategoryService extends BaseService
         }
         return $result;
     }
-
 }

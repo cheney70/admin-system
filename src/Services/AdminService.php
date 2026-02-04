@@ -14,15 +14,15 @@ use Cheney\Content\Models\AdminUsers;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class AdminService extends BaseService{
 
+class AdminService extends BaseService{
     public function __construct()
     {
         parent::__construct(AdminUsers::class);
     }
 
     /**
-     * ÓÃ»§µÇÂ¼
+     * ç™»å½•
      */
     public function login($name,$password){
         //try{
@@ -31,34 +31,40 @@ class AdminService extends BaseService{
             if(! $model->exists()){
                 return false;
             }
-            //»ñÈ¡Êý¾Ý¿âÃÜÂë
+            // æŸ¥ä¿®æ•°æ®
             $dbPassword = $model->value('password');
-            //½ØÈ¡MD5 ×Ö·û´®
+            // èŽ·å–çœŸå®žå¯†ç 
             $inputCache = substr($password, 0, 10);
 
-            //Í¨¹ýÆ´½Ó»ñÈ¡ÕæÊµÃÜÂë
-            $cacheKey    = Cache::get(config("content.admin_cache_key"));
-            //ÅÐ¶Ï»º´æ
+            // èŽ·å–å¯†é’¥
+            $cacheKey    = Cache::pull(config("content.admin_cache_key"));
+            // ä¸Šä¼ å¯†é’¥å’Œç¼“å­˜å¯¹æ¯”
             if ($cacheKey  !== $inputCache) {
                 return false;
             }
             $inputPassword = substr($password, 10);
-            //ÅÐ¶Ïpasswrod
+            // éªŒè¯å¯†ç 
             if ($inputPassword  !== $dbPassword) {
                 return false;
             }
-            //Éú³ÉµÇÂ¼token
+            // ç”ŸæˆåŒken
             $accessToken = encrypt(Str::random(15));
-            //±£´æ$accessToken
+            // $accessToken
             $model ->update(['access_token' => $accessToken]);
             $adminData = $model->first();
         //}catch (\Exception $e){
             //echo $e ->getMessage();
            // return false;
         //}
-        //µÇÂ¼³É¹¦É¾³ý»º´æ
+        //ï¿½ï¿½Â¼ï¿½É¹ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         //Cache::pull($cacheKey);
         return $adminData;
+    }
+
+    public function logout($id){
+        $admin = AdminUsers::findOrFail($id);
+        $admin->access_token = '';
+        return $admin->save();
     }
 
     /**
@@ -66,9 +72,9 @@ class AdminService extends BaseService{
      * @return bool
      */
     public function getTokenByAdminUser($token){
-        $model = AdminUsers::query();
-        $access_token = str_replace($token , "Bearer ", "" );
-        $model -> where('access_toke',$access_token);
+        $model = AdminUsers::query()->with('roles')->with('permissions');
+        $access_token = str_replace("Bearer ", "" ,$token);
+        $model -> where('access_token',trim($access_token));
         if( !$model->exists()){
             return null;
         } else {
@@ -80,7 +86,7 @@ class AdminService extends BaseService{
      * @return void
      */
     public function getList($params){
-        $model = Articles::query();
+        $model = AdminUsers::query();
         if (isset($params['name']) && !empty($params['name'])){
             $model ->where('name',$params['name']);
         }

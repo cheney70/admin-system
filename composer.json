@@ -1,0 +1,61 @@
+{
+    "name": "cheney/adminSystem",
+    "type": "library",
+    "description": "Ant Admin System - Laravel后台管理系统Composer包",
+    "keywords": ["laravel", "admin", "rbac", "jwt"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ant Admin Team",
+            "email": "support@antadmin.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "laravel/framework": "^8.0|^9.0|^10.0",
+        "tymon/jwt-auth": "^1.0",
+        "darkaonline/l5-swagger": "^8.0"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.9.1",
+        "mockery/mockery": "^1.4.2",
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "AntAdmin\\AdminSystem\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AntAdmin\\AdminSystem\\Tests\\": "src/tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test-coverage": "phpunit --coverage"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AntAdmin\\AdminSystem\\AdminSystemServiceProvider"
+            ],
+            "aliases": {
+                "AdminAuth": "AntAdmin\\AdminSystem\\Facades\\AdminAuth",
+                "AdminUser": "AntAdmin\\AdminSystem\\Facades\\AdminUser",
+                "AdminRole": "AntAdmin\\AdminSystem\\Facades\\AdminRole",
+                "AdminPermission": "AntAdmin\\AdminSystem\\Facades\\AdminPermission",
+                "AdminMenu": "AntAdmin\\AdminSystem\\Facades\\AdminMenu",
+                "AdminOperationLog": "AntAdmin\\AdminSystem\\Facades\\AdminOperationLog"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

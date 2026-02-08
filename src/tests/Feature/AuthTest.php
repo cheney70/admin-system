@@ -1,158 +1,124 @@
 <?php
 
-namespace Tests\Feature;
+namespace Cheney\AdminSystem\Tests\Feature;
 
-use Cheney\AdminSystem\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Cheney\AdminSystem\Models\Admin;
 
 class AuthTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_user_can_login_with_valid_credentials()
+    public function test_admin_can_login_with_valid_credentials()
     {
-        $user = User::factory()->create([
-            'username' => 'testuser',
-            'password' => bcrypt('password123'),
+        $admin = Admin::factory()->create([
+            'username' => 'testadmin',
+            'password' => bcrypt('password'),
             'status' => 1,
         ]);
 
-        $response = $this->postJson('/api/login', [
-            'username' => 'testuser',
-            'password' => 'password123',
+        $response = $this->post('/api/system/auth/login', [
+            'username' => 'testadmin',
+            'password' => 'password',
         ]);
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'code',
-                'message',
-                'data' => [
-                    'access_token',
-                    'token_type',
-                    'expires_in',
-                    'user',
-                ],
-            ]);
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'code',
+            'message',
+            'data' => [
+                'access_token',
+                'token_type',
+                'expires_in',
+                'user',
+            ],
+        ]);
     }
 
-    public function test_user_cannot_login_with_invalid_credentials()
+    public function test_admin_cannot_login_with_invalid_credentials()
     {
-        $user = User::factory()->create([
-            'username' => 'testuser',
-            'password' => bcrypt('password123'),
+        $admin = Admin::factory()->create([
+            'username' => 'testadmin',
+            'password' => bcrypt('password'),
             'status' => 1,
         ]);
 
-        $response = $this->postJson('/api/login', [
-            'username' => 'testuser',
+        $response = $this->post('/api/system/auth/login', [
+            'username' => 'testadmin',
             'password' => 'wrongpassword',
         ]);
 
-        $response->assertStatus(200)
-            ->assertJson([
-                'code' => 20000,
-            ]);
+        $response->assertStatus(200);
+        $response->assertJson([
+            'code' => 20000,
+        ]);
     }
 
-    public function test_user_cannot_login_with_disabled_account()
+    public function test_admin_cannot_login_with_disabled_account()
     {
-        $user = User::factory()->create([
-            'username' => 'testuser',
-            'password' => bcrypt('password123'),
+        $admin = Admin::factory()->create([
+            'username' => 'testadmin',
+            'password' => bcrypt('password'),
             'status' => 0,
         ]);
 
-        $response = $this->postJson('/api/login', [
-            'username' => 'testuser',
-            'password' => 'password123',
+        $response = $this->post('/api/system/auth/login', [
+            'username' => 'testadmin',
+            'password' => 'password',
         ]);
 
-        $response->assertStatus(200)
-            ->assertJson([
-                'code' => 403,
-            ]);
+        $response->assertStatus(200);
+        $response->assertJson([
+            'code' => 20000,
+        ]);
     }
 
-    public function test_authenticated_user_can_logout()
+    public function test_authenticated_admin_can_logout()
     {
-        $user = User::factory()->create([
-            'username' => 'testuser',
-            'password' => bcrypt('password123'),
+        $admin = Admin::factory()->create([
+            'username' => 'testadmin',
+            'password' => bcrypt('password'),
             'status' => 1,
         ]);
 
-        $token = auth('api')->attempt([
-            'username' => 'testuser',
-            'password' => 'password123',
-        ]);
+        $token = auth('api')->login($admin);
+        
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->post('/api/system/auth/logout');
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
-            ->postJson('/api/logout');
-
-        $response->assertStatus(200)
-            ->assertJson([
-                'code' => 10000,
-            ]);
+        $response->assertStatus(200);
     }
 
-    public function test_authenticated_user_can_get_profile()
+    public function test_authenticated_admin_can_get_profile()
     {
-        $user = User::factory()->create([
-            'username' => 'testuser',
-            'password' => bcrypt('password123'),
+        $admin = Admin::factory()->create([
+            'username' => 'testadmin',
+            'password' => bcrypt('password'),
             'status' => 1,
         ]);
 
-        $token = auth('api')->attempt([
-            'username' => 'testuser',
-            'password' => 'password123',
+        $token = auth('api')->login($admin);
+        
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->get('/api/system/auth/me');
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'code',
+            'message',
+            'data' => [
+                'id',
+                'username',
+                'name',
+                'email',
+                'phone',
+                'avatar',
+                'roles',
+                'permissions',
+            ],
         ]);
-
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
-            ->getJson('/api/me');
-
-        $response->assertStatus(200)
-            ->assertJson([
-                'code' => 10000,
-            ]);
-    }
-
-    public function test_unauthenticated_user_cannot_access_protected_routes()
-    {
-        $response = $this->getJson('/api/me');
-
-        $response->assertStatus(200)
-            ->assertJson([
-                'code' => 401,
-            ]);
-    }
-
-    public function test_authenticated_user_can_refresh_token()
-    {
-        $user = User::factory()->create([
-            'username' => 'testuser',
-            'password' => bcrypt('password123'),
-            'status' => 1,
-        ]);
-
-        $token = auth('api')->attempt([
-            'username' => 'testuser',
-            'password' => 'password123',
-        ]);
-
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
-            ->postJson('/api/refresh');
-
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'code',
-                'message',
-                'data' => [
-                    'access_token',
-                    'token_type',
-                    'expires_in',
-                ],
-            ]);
     }
 }

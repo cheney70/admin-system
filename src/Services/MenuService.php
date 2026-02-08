@@ -61,16 +61,35 @@ class MenuService
         return $menu->delete();
     }
 
-    public function getUserMenus()
+    public function tree()
     {
-        $user = auth('api')->user();
-        $permissions = $user->permissions();
+        $menus = $this->menuModel->orderBy('sort')->get();
+        return $this->buildTree($menus->toArray());
+    }
+
+    public function userMenus()
+    {
+        $admin = auth('api')->user();
         
-        $menuIds = $permissions->pluck('menu_id')->unique()->filter();
+        $permissionCodes = [];
+        foreach ($admin->roles as $role) {
+            foreach ($role->permissions as $permission) {
+                $permissionCodes[] = $permission->code;
+            }
+        }
+        
+        $permissionCodes = array_unique($permissionCodes);
+        
+        $menuIds = $this->permissionModel->whereIn('code', $permissionCodes)
+            ->whereNotNull('menu_id')
+            ->pluck('menu_id')
+            ->unique()
+            ->filter();
         
         $menus = $this->menuModel->whereIn('id', $menuIds)
             ->active()
             ->notHidden()
+            ->menuType()
             ->orderBy('sort')
             ->get();
             

@@ -19,6 +19,8 @@ class AdminSystemServiceProvider extends ServiceProvider
         ], 'admin-migrations');
 
         $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
 
     public function register()
@@ -30,13 +32,13 @@ class AdminSystemServiceProvider extends ServiceProvider
 
         $this->app->singleton('admin.auth', function ($app) {
             return new Services\AuthService(
-                $app->make(Models\User::class)
+                $app->make(Models\Admin::class)
             );
         });
 
         $this->app->singleton('admin.user', function ($app) {
             return new Services\UserService(
-                $app->make(Models\User::class),
+                $app->make(Models\Admin::class),
                 $app->make(Models\Role::class)
             );
         });

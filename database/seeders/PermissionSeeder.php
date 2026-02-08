@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Admin\Models\Permission;
+use AntAdmin\AdminSystem\Models\Permission;
 use Illuminate\Database\Seeder;
 
 class PermissionSeeder extends Seeder
@@ -10,33 +10,33 @@ class PermissionSeeder extends Seeder
     public function run()
     {
         Permission::create([
-            'name' => '用户列表',
-            'code' => 'user:list',
-            'description' => '查看用户列表',
+            'name' => '管理员列表',
+            'code' => 'admin:list',
+            'description' => '查看管理员列表',
             'menu_id' => 2,
             'type' => 1,
         ]);
 
         Permission::create([
-            'name' => '创建用户',
-            'code' => 'user:create',
-            'description' => '创建用户',
+            'name' => '创建管理员',
+            'code' => 'admin:create',
+            'description' => '创建管理员',
             'menu_id' => 2,
             'type' => 2,
         ]);
 
         Permission::create([
-            'name' => '编辑用户',
-            'code' => 'user:update',
-            'description' => '编辑用户',
+            'name' => '编辑管理员',
+            'code' => 'admin:update',
+            'description' => '编辑管理员',
             'menu_id' => 2,
             'type' => 2,
         ]);
 
         Permission::create([
-            'name' => '删除用户',
-            'code' => 'user:delete',
-            'description' => '删除用户',
+            'name' => '删除管理员',
+            'code' => 'admin:delete',
+            'description' => '删除管理员',
             'menu_id' => 2,
             'type' => 2,
         ]);

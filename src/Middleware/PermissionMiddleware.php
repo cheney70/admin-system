@@ -12,13 +12,13 @@ class PermissionMiddleware
 
     public function handle(Request $request, Closure $next, $permission)
     {
-        $user = auth('api')->user();
+        $admin = auth('api')->user();
         
-        if (!$user) {
+        if (!$admin) {
             return $this->unauthorized();
         }
         
-        if (!$user->hasPermission($permission)) {
+        if (!$admin->hasPermission($permission)) {
             return $this->forbidden('无权访问');
         }
         

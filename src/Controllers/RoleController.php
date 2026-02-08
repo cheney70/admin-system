@@ -3,8 +3,8 @@
 namespace Cheney\AdminSystem\Controllers;
 
 use Illuminate\Http\Request;
-use Admin\Services\RoleService;
-use Admin\Traits\ApiResponseTrait;
+use Cheney\AdminSystem\Services\RoleService;
+use Cheney\AdminSystem\Traits\ApiResponseTrait;
 
 class RoleController extends Controller
 {
@@ -33,8 +33,8 @@ class RoleController extends Controller
             $validated = $request->validate([
                 'name' => 'required|string|max:50',
                 'code' => 'required|string|max:50|unique:roles',
-                'description' => 'nullable|string',
-                'sort' => 'nullable|integer',
+                'description' => 'nullable|string|max:255',
+                'sort' => 'nullable|integer|min:0',
                 'status' => 'nullable|integer|in:0,1',
             ]);
 
@@ -49,7 +49,7 @@ class RoleController extends Controller
     {
         try {
             $role = $this->roleService->show($id);
-            return $this->successWithData($role);
+            return $this->success($role);
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }
@@ -61,13 +61,13 @@ class RoleController extends Controller
             $validated = $request->validate([
                 'name' => 'required|string|max:50',
                 'code' => 'required|string|max:50|unique:roles,code,' . $id,
-                'description' => 'nullable|string',
-                'sort' => 'nullable|integer',
+                'description' => 'nullable|string|max:255',
+                'sort' => 'nullable|integer|min:0',
                 'status' => 'nullable|integer|in:0,1',
             ]);
 
             $role = $this->roleService->update($id, $validated);
-            return $this->updated($role);
+            return $this->success($role, '更新成功');
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }
@@ -77,7 +77,7 @@ class RoleController extends Controller
     {
         try {
             $this->roleService->destroy($id);
-            return $this->deleted();
+            return $this->success(null, '删除成功');
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }
@@ -88,11 +88,26 @@ class RoleController extends Controller
         try {
             $validated = $request->validate([
                 'permission_ids' => 'required|array',
-                'permission_ids.*' => 'integer|exists:permissions,id',
+                'permission_ids.*' => 'exists:permissions,id',
             ]);
 
             $this->roleService->assignPermissions($id, $validated['permission_ids']);
-            return $this->successWithMessage('权限分配成功');
+            return $this->success(null, '分配权限成功');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage());
+        }
+    }
+
+    public function assignAdmins(Request $request, $id)
+    {
+        try {
+            $validated = $request->validate([
+                'admin_ids' => 'required|array',
+                'admin_ids.*' => 'exists:admins,id',
+            ]);
+
+            $this->roleService->assignAdmins($id, $validated['admin_ids']);
+            return $this->success(null, '分配管理员成功');
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }

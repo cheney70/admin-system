@@ -13,7 +13,7 @@ class OperationLogMiddleware
         $response = $next($request);
         
         if (auth('api')->check()) {
-            $user = auth('api')->user();
+            $admin = auth('api')->user();
             
             $route = $request->route();
             $action = $route ? $route->getActionName() : '';
@@ -25,8 +25,8 @@ class OperationLogMiddleware
             $actionName = $this->getActionName($method);
             
             OperationLog::create([
-                'user_id' => $user->id,
-                'username' => $user->username,
+                'admin_id' => $admin->id,
+                'username' => $admin->username,
                 'module' => $module,
                 'action' => $actionName,
                 'method' => $request->method(),
@@ -35,7 +35,7 @@ class OperationLogMiddleware
                 'ip' => $request->ip(),
                 'user_agent' => $request->userAgent(),
                 'status' => $response->getStatusCode() < 400 ? 1 : 0,
-                'error_msg' => $response->getStatusCode() >= 400 ? $response->getContent() : null,
+                'error_message' => $response->getStatusCode() >= 400 ? $response->getContent() : null,
             ]);
         }
         

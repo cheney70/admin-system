@@ -58,8 +58,8 @@ class RoleService
     {
         $role = $this->roleModel->findOrFail($id);
 
-        if ($role->users()->exists()) {
-            throw new \Exception('该角色下有用户，无法删除');
+        if ($role->admins()->exists()) {
+            throw new \Exception('该角色下有管理员，无法删除');
         }
 
         return $role->delete();
@@ -68,6 +68,12 @@ class RoleService
     public function assignPermissions(int $roleId, array $permissionIds): void
     {
         $role = $this->roleModel->findOrFail($roleId);
-        $role->syncPermissions($permissionIds);
+        $role->permissions()->sync($permissionIds);
+    }
+
+    public function assignAdmins(int $roleId, array $adminIds): void
+    {
+        $role = $this->roleModel->findOrFail($roleId);
+        $role->admins()->sync($adminIds);
     }
 }

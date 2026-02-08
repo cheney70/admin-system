@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use Admin\Models\User;
+use Cheney\AdminSystem\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-class UserFactory extends Factory
+class AdminFactory extends Factory
 {
-    protected $model = User::class;
+    protected $model = Admin::class;
 
     public function definition()
     {

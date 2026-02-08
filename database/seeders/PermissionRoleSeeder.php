@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Admin\Models\Role;
-use Admin\Models\Permission;
+use AntAdmin\AdminSystem\Models\Role;
+use AntAdmin\AdminSystem\Models\Permission;
 use Illuminate\Database\Seeder;
 
 class PermissionRoleSeeder extends Seeder
@@ -20,7 +20,7 @@ class PermissionRoleSeeder extends Seeder
         $superAdminRole->permissions()->sync($allPermissions);
 
         $adminPermissions = Permission::whereIn('code', [
-            'user:list', 'user:create', 'user:update',
+            'admin:list', 'admin:create', 'admin:update',
             'role:list', 'role:create', 'role:update',
             'permission:list', 'menu:list',
             'log:list',
@@ -28,14 +28,14 @@ class PermissionRoleSeeder extends Seeder
         $adminRole->permissions()->sync($adminPermissions);
 
         $editorPermissions = Permission::whereIn('code', [
-            'user:list', 'user:update',
+            'admin:list', 'admin:update',
             'role:list',
             'permission:list', 'menu:list',
         ])->pluck('id')->toArray();
         $editorRole->permissions()->sync($editorPermissions);
 
         $userPermissions = Permission::whereIn('code', [
-            'user:list',
+            'admin:list',
             'role:list',
             'permission:list', 'menu:list',
         ])->pluck('id')->toArray();

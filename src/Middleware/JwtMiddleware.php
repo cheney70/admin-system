@@ -13,13 +13,13 @@ class JwtMiddleware
     public function handle(Request $request, Closure $next)
     {
         try {
-            $user = auth('api')->user();
+            $admin = auth('api')->user();
             
-            if (!$user) {
+            if (!$admin) {
                 return $this->unauthorized();
             }
             
-            if ($user->status != 1) {
+            if ($admin->status != 1) {
                 return $this->forbidden('账号已被禁用');
             }
             

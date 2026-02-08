@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use Admin\Models\OperationLog;
+use Cheney\AdminSystem\Models\OperationLog;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OperationLogFactory extends Factory
@@ -12,7 +12,7 @@ class OperationLogFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => 1,
+            'admin_id' => 1,
             'username' => $this->faker->userName,
             'module' => $this->faker->randomElement(['用户管理', '角色管理', '权限管理', '菜单管理']),
             'action' => $this->faker->randomElement(['创建', '更新', '删除', '查看']),

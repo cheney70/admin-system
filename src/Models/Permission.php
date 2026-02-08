@@ -3,9 +3,18 @@
 namespace Cheney\AdminSystem\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Database\Factories\PermissionFactory;
 
 class Permission extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return PermissionFactory::new();
+    }
+
     protected $fillable = [
         'name',
         'code',
@@ -27,15 +36,5 @@ class Permission extends Model
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'permission_role');
-    }
-
-    public function scopeByType($query, $type)
-    {
-        return $query->where('type', $type);
-    }
-
-    public function scopeByMenu($query, $menuId)
-    {
-        return $query->where('menu_id', $menuId);
     }
 }

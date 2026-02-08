@@ -2,14 +2,14 @@
 
 namespace Database\Seeders;
 
-use Admin\Models\User;
+use AntAdmin\AdminSystem\Models\Admin;
 use Illuminate\Database\Seeder;
 
-class UserSeeder extends Seeder
+class AdminSeeder extends Seeder
 {
     public function run()
     {
-        User::create([
+        Admin::create([
             'username' => 'admin',
             'password' => bcrypt('123456'),
             'name' => '超级管理员',
@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
             'status' => 1,
         ]);
 
-        User::create([
+        Admin::create([
             'username' => 'editor',
             'password' => bcrypt('123456'),
             'name' => '编辑员',
@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
             'status' => 1,
         ]);
 
-        User::create([
+        Admin::create([
             'username' => 'user',
             'password' => bcrypt('123456'),
             'name' => '普通用户',

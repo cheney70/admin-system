@@ -1,13 +1,13 @@
 {
-    "name": "cheney/adminSystem",
+    "name": "cheney/admin-system",
     "type": "library",
-    "description": "Ant Admin System - Laravel后台管理系统Composer包",
+    "description": "Cheney Admin System - Laravel后台管理系统Composer包",
     "keywords": ["laravel", "admin", "rbac", "jwt"],
     "license": "MIT",
     "authors": [
         {
-            "name": "Ant Admin Team",
-            "email": "support@antadmin.com"
+            "name": "Cheney Admin Team",
+            "email": "support@cheney.com"
         }
     ],
     "require": {
@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "AntAdmin\\AdminSystem\\": "src/"
+            "Cheney\\AdminSystem\\": "src/"
         },
         "files": [
             "src/helpers.php"
@@ -31,7 +31,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "AntAdmin\\AdminSystem\\Tests\\": "src/tests/"
+            "Cheney\\AdminSystem\\Tests\\": "src/tests/"
         }
     },
     "scripts": {
@@ -41,15 +41,15 @@
     "extra": {
         "laravel": {
             "providers": [
-                "AntAdmin\\AdminSystem\\AdminSystemServiceProvider"
+                "Cheney\\AdminSystem\\AdminSystemServiceProvider"
             ],
             "aliases": {
-                "AdminAuth": "AntAdmin\\AdminSystem\\Facades\\AdminAuth",
-                "AdminUser": "AntAdmin\\AdminSystem\\Facades\\AdminUser",
-                "AdminRole": "AntAdmin\\AdminSystem\\Facades\\AdminRole",
-                "AdminPermission": "AntAdmin\\AdminSystem\\Facades\\AdminPermission",
-                "AdminMenu": "AntAdmin\\AdminSystem\\Facades\\AdminMenu",
-                "AdminOperationLog": "AntAdmin\\AdminSystem\\Facades\\AdminOperationLog"
+                "AdminAuth": "Cheney\\AdminSystem\\Facades\\AdminAuth",
+                "AdminUser": "Cheney\\AdminSystem\\Facades\\AdminUser",
+                "AdminRole": "Cheney\\AdminSystem\\Facades\\AdminRole",
+                "AdminPermission": "Cheney\\AdminSystem\\Facades\\AdminPermission",
+                "AdminMenu": "Cheney\\AdminSystem\\Facades\\AdminMenu",
+                "AdminOperationLog": "Cheney\\AdminSystem\\Facades\\AdminOperationLog"
             }
         }
     },

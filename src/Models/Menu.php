@@ -3,9 +3,18 @@
 namespace Cheney\AdminSystem\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Database\Factories\MenuFactory;
 
 class Menu extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return MenuFactory::new();
+    }
+
     protected $fillable = [
         'title',
         'name',
@@ -29,14 +38,14 @@ class Menu extends Model
         'keep_alive' => 'boolean',
     ];
 
+    public function children()
+    {
+        return $this->hasMany(Menu::class, 'parent_id')->orderBy('sort');
+    }
+
     public function parent()
     {
         return $this->belongsTo(Menu::class, 'parent_id');
-    }
-
-    public function children()
-    {
-        return $this->hasMany(Menu::class, 'parent_id');
     }
 
     public function permissions()
@@ -51,16 +60,11 @@ class Menu extends Model
 
     public function scopeNotHidden($query)
     {
-        return $query->where('is_hidden', 0);
+        return $query->where('is_hidden', false);
     }
 
-    public function scopeByType($query, $type)
+    public function scopeMenuType($query)
     {
-        return $query->where('type', $type);
-    }
-
-    public function scopeRoot($query)
-    {
-        return $query->where('parent_id', 0);
+        return $query->whereIn('type', [1, 2]);
     }
 }

@@ -3,11 +3,20 @@
 namespace Cheney\AdminSystem\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Database\Factories\OperationLogFactory;
 
 class OperationLog extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return OperationLogFactory::new();
+    }
+
     protected $fillable = [
-        'user_id',
+        'admin_id',
         'username',
         'module',
         'action',
@@ -25,9 +34,9 @@ class OperationLog extends Model
         'params' => 'array',
     ];
 
-    public function user()
+    public function admin()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Admin::class);
     }
 
     public function scopeSuccess($query)
@@ -38,11 +47,6 @@ class OperationLog extends Model
     public function scopeFailed($query)
     {
         return $query->where('status', 0);
-    }
-
-    public function scopeByUser($query, $userId)
-    {
-        return $query->where('user_id', $userId);
     }
 
     public function scopeByModule($query, $module)

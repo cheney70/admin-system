@@ -3,8 +3,8 @@
 namespace Cheney\AdminSystem\Controllers;
 
 use Illuminate\Http\Request;
-use Admin\Services\PermissionService;
-use Admin\Traits\ApiResponseTrait;
+use Cheney\AdminSystem\Services\PermissionService;
+use Cheney\AdminSystem\Traits\ApiResponseTrait;
 
 class PermissionController extends Controller
 {
@@ -31,9 +31,9 @@ class PermissionController extends Controller
     {
         try {
             $validated = $request->validate([
-                'name' => 'required|string|max:100',
-                'code' => 'required|string|max:100|unique:permissions',
-                'description' => 'nullable|string',
+                'name' => 'required|string|max:50',
+                'code' => 'required|string|max:50|unique:permissions',
+                'description' => 'nullable|string|max:255',
                 'menu_id' => 'nullable|integer|exists:menus,id',
                 'type' => 'required|integer|in:1,2',
             ]);
@@ -49,7 +49,7 @@ class PermissionController extends Controller
     {
         try {
             $permission = $this->permissionService->show($id);
-            return $this->successWithData($permission);
+            return $this->success($permission);
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }
@@ -59,15 +59,15 @@ class PermissionController extends Controller
     {
         try {
             $validated = $request->validate([
-                'name' => 'required|string|max:100',
-                'code' => 'required|string|max:100|unique:permissions,code,' . $id,
-                'description' => 'nullable|string',
+                'name' => 'required|string|max:50',
+                'code' => 'required|string|max:50|unique:permissions,code,' . $id,
+                'description' => 'nullable|string|max:255',
                 'menu_id' => 'nullable|integer|exists:menus,id',
                 'type' => 'required|integer|in:1,2',
             ]);
 
             $permission = $this->permissionService->update($id, $validated);
-            return $this->updated($permission);
+            return $this->success($permission, '更新成功');
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }
@@ -77,7 +77,7 @@ class PermissionController extends Controller
     {
         try {
             $this->permissionService->destroy($id);
-            return $this->deleted();
+            return $this->success(null, '删除成功');
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }

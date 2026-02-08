@@ -3,8 +3,8 @@
 namespace Cheney\AdminSystem\Controllers;
 
 use Illuminate\Http\Request;
-use Admin\Services\UserService;
-use Admin\Traits\ApiResponseTrait;
+use Cheney\AdminSystem\Services\UserService;
+use Cheney\AdminSystem\Traits\ApiResponseTrait;
 
 class UserController extends Controller
 {
@@ -20,8 +20,8 @@ class UserController extends Controller
     public function index(Request $request)
     {
         try {
-            $users = $this->userService->index($request->all());
-            return $this->successPaginated($users);
+            $admins = $this->userService->index($request->all());
+            return $this->successPaginated($admins);
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }
@@ -31,17 +31,17 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validate([
-                'username' => 'required|string|max:50|unique:users',
+                'username' => 'required|string|max:50|unique:admins',
                 'password' => 'required|string|min:6',
                 'name' => 'required|string|max:50',
-                'email' => 'nullable|email|max:100|unique:users',
+                'email' => 'nullable|email|max:100|unique:admins',
                 'phone' => 'nullable|string|max:20',
                 'avatar' => 'nullable|string',
                 'status' => 'nullable|integer|in:0,1',
             ]);
 
-            $user = $this->userService->store($validated);
-            return $this->created($user);
+            $admin = $this->userService->store($validated);
+            return $this->created($admin);
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }
@@ -50,8 +50,8 @@ class UserController extends Controller
     public function show($id)
     {
         try {
-            $user = $this->userService->show($id);
-            return $this->successWithData($user);
+            $admin = $this->userService->show($id);
+            return $this->success($admin);
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }
@@ -61,17 +61,16 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validate([
-                'username' => 'required|string|max:50|unique:users,username,' . $id,
-                'password' => 'nullable|string|min:6',
+                'username' => 'required|string|max:50|unique:admins,username,' . $id,
                 'name' => 'required|string|max:50',
-                'email' => 'nullable|email|max:100|unique:users,email,' . $id,
+                'email' => 'nullable|email|max:100|unique:admins,email,' . $id,
                 'phone' => 'nullable|string|max:20',
                 'avatar' => 'nullable|string',
                 'status' => 'nullable|integer|in:0,1',
             ]);
 
-            $user = $this->userService->update($id, $validated);
-            return $this->updated($user);
+            $admin = $this->userService->update($id, $validated);
+            return $this->success($admin, '更新成功');
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }
@@ -81,7 +80,7 @@ class UserController extends Controller
     {
         try {
             $this->userService->destroy($id);
-            return $this->deleted();
+            return $this->success(null, '删除成功');
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }
@@ -92,11 +91,11 @@ class UserController extends Controller
         try {
             $validated = $request->validate([
                 'role_ids' => 'required|array',
-                'role_ids.*' => 'integer|exists:roles,id',
+                'role_ids.*' => 'exists:roles,id',
             ]);
 
             $this->userService->assignRoles($id, $validated['role_ids']);
-            return $this->successWithMessage('角色分配成功');
+            return $this->success(null, '分配角色成功');
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }
@@ -110,7 +109,21 @@ class UserController extends Controller
             ]);
 
             $this->userService->resetPassword($id, $validated['password']);
-            return $this->successWithMessage('密码重置成功');
+            return $this->success(null, '重置密码成功');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage());
+        }
+    }
+
+    public function changeStatus(Request $request, $id)
+    {
+        try {
+            $validated = $request->validate([
+                'status' => 'required|integer|in:0,1',
+            ]);
+
+            $this->userService->changeStatus($id, $validated['status']);
+            return $this->success(null, '状态修改成功');
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }

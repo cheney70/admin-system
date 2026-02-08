@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use Admin\Models\Role;
+use Cheney\AdminSystem\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RoleFactory extends Factory

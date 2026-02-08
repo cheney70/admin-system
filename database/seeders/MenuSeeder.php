@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Admin\Models\Menu;
+use AntAdmin\AdminSystem\Models\Menu;
 use Illuminate\Database\Seeder;
 
 class MenuSeeder extends Seeder
@@ -24,11 +24,11 @@ class MenuSeeder extends Seeder
         ]);
 
         Menu::create([
-            'title' => '用户管理',
-            'name' => 'User',
+            'title' => '管理员管理',
+            'name' => 'Admin',
             'parent_id' => 1,
-            'path' => '/system/user',
-            'component' => 'system/user/index',
+            'path' => '/system/admin',
+            'component' => 'system/admin/index',
             'icon' => 'user',
             'type' => 2,
             'sort' => 1,

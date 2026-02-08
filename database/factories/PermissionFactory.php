@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use Admin\Models\Permission;
+use Cheney\AdminSystem\Models\Permission;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PermissionFactory extends Factory

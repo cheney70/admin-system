@@ -3,9 +3,18 @@
 namespace Cheney\AdminSystem\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Database\Factories\RoleFactory;
 
 class Role extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return RoleFactory::new();
+    }
+
     protected $fillable = [
         'name',
         'code',
@@ -19,9 +28,9 @@ class Role extends Model
         'sort' => 'integer',
     ];
 
-    public function users()
+    public function admins()
     {
-        return $this->belongsToMany(User::class, 'role_user');
+        return $this->belongsToMany(Admin::class, 'role_admin', 'role_id', 'admin_id');
     }
 
     public function permissions()
@@ -29,18 +38,19 @@ class Role extends Model
         return $this->belongsToMany(Permission::class, 'permission_role');
     }
 
-    public function syncPermissions(array $permissionIds)
-    {
-        return $this->permissions()->sync($permissionIds);
-    }
-
     public function hasPermission($permissionCode)
     {
         return $this->permissions()->where('code', $permissionCode)->exists();
     }
 
-    public function scopeActive($query)
+    public function hasAnyPermission(array $permissionCodes)
     {
-        return $query->where('status', 1);
+        return $this->permissions()->whereIn('code', $permissionCodes)->exists();
+    }
+
+    public function hasAllPermissions(array $permissionCodes)
+    {
+        $permissionCount = $this->permissions()->whereIn('code', $permissionCodes)->count();
+        return $permissionCount === count($permissionCodes);
     }
 }

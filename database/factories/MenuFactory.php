@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use Admin\Models\Menu;
+use Cheney\AdminSystem\Models\Menu;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MenuFactory extends Factory

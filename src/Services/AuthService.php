@@ -2,39 +2,42 @@
 
 namespace Cheney\AdminSystem\Services;
 
-use Cheney\AdminSystem\Models\User;
+use Cheney\AdminSystem\Models\Admin;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
 use Cheney\AdminSystem\Exceptions\AuthException;
 
 class AuthService
 {
-    protected $userModel;
+    protected $adminModel;
 
-    public function __construct(User $userModel)
+    public function __construct(Admin $adminModel)
     {
-        $this->userModel = $userModel;
+        $this->adminModel = $adminModel;
     }
 
-    public function login(string $username, string $password)
+    public function login(array $credentials)
     {
-        $user = $this->userModel->where('username', $username)->first();
+        $username = $credentials['username'];
+        $password = $credentials['password'];
 
-        if (!$user) {
+        $admin = $this->adminModel->where('username', $username)->first();
+
+        if (!$admin) {
             throw new AuthException('用户不存在');
         }
 
-        if ($user->status != 1) {
+        if ($admin->status != 1) {
             throw new AuthException('账号已被禁用');
         }
 
-        if (!Hash::check($password, $user->password)) {
+        if (!Hash::check($password, $admin->password)) {
             throw new AuthException('密码错误');
         }
 
-        $token = JWTAuth::fromUser($user);
+        $token = JWTAuth::fromUser($admin);
 
-        $user->update([
+        $admin->update([
             'last_login_at' => now(),
             'last_login_ip' => request()->ip(),
         ]);
@@ -43,7 +46,7 @@ class AuthService
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60,
-            'user' => $this->getUserInfo($user),
+            'user' => $this->getUserInfo($admin),
         ];
     }
 
@@ -55,7 +58,7 @@ class AuthService
     public function refresh()
     {
         $token = auth('api')->refresh();
-        $user = auth('api')->user();
+        $admin = auth('api')->user();
 
         return [
             'access_token' => $token,
@@ -66,22 +69,51 @@ class AuthService
 
     public function me()
     {
-        $user = auth('api')->user();
-        return $this->getUserInfo($user);
+        $admin = auth('api')->user();
+        return $this->getUserInfo($admin);
     }
 
-    protected function getUserInfo($user)
+    public function updateProfile(array $data)
     {
+        $admin = auth('api')->user();
+        $admin->update($data);
+        return $this->getUserInfo($admin->fresh());
+    }
+
+    public function changePassword(array $data)
+    {
+        $admin = auth('api')->user();
+        
+        if (!Hash::check($data['old_password'], $admin->password)) {
+            throw new AuthException('原密码错误');
+        }
+
+        $admin->update([
+            'password' => bcrypt($data['new_password']),
+        ]);
+    }
+
+    protected function getUserInfo($admin)
+    {
+        $permissions = [];
+        foreach ($admin->roles as $role) {
+            foreach ($role->permissions as $permission) {
+                $permissions[] = $permission->code;
+            }
+        }
+        
+        $permissions = array_unique($permissions);
+
         return [
-            'id' => $user->id,
-            'username' => $user->username,
-            'name' => $user->name,
-            'email' => $user->email,
-            'phone' => $user->phone,
-            'avatar' => $user->avatar,
-            'roles' => $user->roles,
-            'permissions' => $user->permissions()->values(),
-            'created_at' => $user->created_at,
+            'id' => $admin->id,
+            'username' => $admin->username,
+            'name' => $admin->name,
+            'email' => $admin->email,
+            'phone' => $admin->phone,
+            'avatar' => $admin->avatar,
+            'roles' => $admin->roles->pluck('name'),
+            'permissions' => array_values($permissions),
+            'created_at' => $admin->created_at,
         ];
     }
 }

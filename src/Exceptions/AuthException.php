@@ -1,6 +1,6 @@
 <?php
 
-namespace Cheney\adminSystem\Exceptions;
+namespace Cheney\AdminSystem\Exceptions;
 
 use Exception;
 

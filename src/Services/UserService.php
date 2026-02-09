@@ -4,6 +4,7 @@ namespace Cheney\AdminSystem\Services;
 
 use Cheney\AdminSystem\Models\Admin;
 use Cheney\AdminSystem\Models\Role;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -69,7 +70,7 @@ class UserService
     {
         $admin = $this->adminModel->findOrFail($id);
 
-        $currentAdmin = auth('admin')->user();
+        $currentAdmin = JWTAuth::parseToken()->authenticate();
         if ($admin->id === $currentAdmin->id) {
             throw new \Exception('不能删除当前登录用户');
         }

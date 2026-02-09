@@ -16,6 +16,7 @@ class CreateRolesTable extends Migration
             $table->tinyInteger('sort')->default(0)->comment('排序');
             $table->tinyInteger('status')->default(1)->comment('状态：1启用 0禁用');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

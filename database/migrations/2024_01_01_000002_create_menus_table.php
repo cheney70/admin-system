@@ -22,6 +22,7 @@ class CreateMenusTable extends Migration
             $table->boolean('is_hidden')->default(false)->comment('是否隐藏');
             $table->boolean('keep_alive')->default(false)->comment('是否缓存');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

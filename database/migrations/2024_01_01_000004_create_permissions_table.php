@@ -16,6 +16,7 @@ class CreatePermissionsTable extends Migration
             $table->unsignedBigInteger('menu_id')->nullable()->comment('关联菜单ID');
             $table->tinyInteger('type')->default(1)->comment('类型：1菜单权限 2操作权限');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

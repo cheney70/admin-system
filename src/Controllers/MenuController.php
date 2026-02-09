@@ -81,7 +81,7 @@ class MenuController extends Controller
      *             @OA\Property(property="sort", type="integer", example=1, description="排序"),
      *             @OA\Property(property="type", type="integer", example=1, description="菜单类型：1-目录，2-菜单，3-按钮"),
      *             @OA\Property(property="status", type="integer", example=1, description="状态：1-启用，0-禁用"),
-     *             @OA\Property(property="visible", type="integer", example=1, description="是否显示：1-显示，0-隐藏")
+     *             @OA\Property(property="is_hidden", type="boolean", example=false, description="是否隐藏：true-隐藏，false-显示")
      *         )
      *     ),
      *     @OA\Response(
@@ -99,6 +99,7 @@ class MenuController extends Controller
     {
         try {
             $validated = $request->validate([
+                'title' => 'required|string|max:50',
                 'name' => 'required|string|max:50',
                 'code' => 'nullable|string|max:50',
                 'path' => 'nullable|string|max:255',
@@ -108,7 +109,7 @@ class MenuController extends Controller
                 'sort' => 'nullable|integer|min:0',
                 'type' => 'required|integer|in:1,2,3',
                 'status' => 'nullable|integer|in:0,1',
-                'visible' => 'nullable|integer|in:0,1',
+                'is_hidden' => 'nullable|boolean',
             ]);
 
             $menu = $this->menuService->store($validated);
@@ -179,7 +180,7 @@ class MenuController extends Controller
      *             @OA\Property(property="sort", type="integer", example=1),
      *             @OA\Property(property="type", type="integer", example=1),
      *             @OA\Property(property="status", type="integer", example=1),
-     *             @OA\Property(property="visible", type="integer", example=1)
+     *             @OA\Property(property="is_hidden", type="boolean", example=false)
      *         )
      *     ),
      *     @OA\Response(
@@ -197,6 +198,7 @@ class MenuController extends Controller
     {
         try {
             $validated = $request->validate([
+                'title' => 'required|string|max:50',
                 'name' => 'required|string|max:50',
                 'code' => 'nullable|string|max:50',
                 'path' => 'nullable|string|max:255',
@@ -206,7 +208,7 @@ class MenuController extends Controller
                 'sort' => 'nullable|integer|min:0',
                 'type' => 'required|integer|in:1,2,3',
                 'status' => 'nullable|integer|in:0,1',
-                'visible' => 'nullable|integer|in:0,1',
+                'is_hidden' => 'nullable|boolean',
             ]);
 
             $menu = $this->menuService->update($id, $validated);

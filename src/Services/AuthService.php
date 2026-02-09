@@ -45,44 +45,43 @@ class AuthService
         return [
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('admin')->factory()->getTTL() * 60,
+            'expires_in' => JWTAuth::factory()->getTTL() * 60,
             'user' => $this->getUserInfo($admin),
         ];
     }
 
     public function logout()
     {
-        auth('admin')->logout();
+        JWTAuth::invalidate(JWTAuth::getToken());
     }
 
     public function refresh()
     {
-        $token = auth('admin')->refresh();
-        $admin = auth('admin')->user();
-
+        $token = JWTAuth::refresh(JWTAuth::getToken());
+        
         return [
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('admin')->factory()->getTTL() * 60,
+            'expires_in' => JWTAuth::factory()->getTTL() * 60,
         ];
     }
 
     public function me()
     {
-        $admin = auth('admin')->user();
+        $admin = JWTAuth::parseToken()->authenticate();
         return $this->getUserInfo($admin);
     }
 
     public function updateProfile(array $data)
     {
-        $admin = auth('admin')->user();
+        $admin = JWTAuth::parseToken()->authenticate();
         $admin->update($data);
         return $this->getUserInfo($admin->fresh());
     }
 
     public function changePassword(array $data)
     {
-        $admin = auth('admin')->user();
+        $admin = JWTAuth::parseToken()->authenticate();
         
         if (!Hash::check($data['old_password'], $admin->password)) {
             throw new AuthException('原密码错误');

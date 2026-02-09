@@ -622,6 +622,124 @@ Token 默认有效期为 24 小时，可以使用 refresh 接口刷新 Token。
 
 检查操作日志中间件是否已正确配置，排除不需要记录的路由。
 
+## 注意事项
+
+### ⚠️ 重要提示
+
+1. **JWT 认证方式**
+   - 本扩展包使用 `Tymon\JWTAuth\Facades\JWTAuth` 进行认证，**不要使用** `auth('admin')` 方式
+   - 在 Service 层、Middleware 层获取当前登录用户时，应使用：
+     ```php
+     use Tymon\JWTAuth\Facades\JWTAuth;
+     
+     // 获取当前用户
+     $admin = JWTAuth::parseToken()->authenticate();
+     
+     // 登出
+     JWTAuth::invalidate(JWTAuth::getToken());
+     
+     // 刷新 Token
+     $token = JWTAuth::refresh(JWTAuth::getToken());
+     
+     // 获取 TTL
+     $ttl = JWTAuth::factory()->getTTL();
+     ```
+
+2. **软删除机制**
+   - 所有删除操作（用户、角色、权限、菜单）都是软删除
+   - 删除后的记录不会从数据库中物理删除，而是设置 `deleted_at` 字段
+   - 删除后的记录无法再次删除，会返回 "No query results" 错误
+   - 如需恢复删除的记录，需要手动在数据库中清除 `deleted_at` 字段
+
+3. **必填字段验证**
+   - 创建菜单时，`title` 和 `name` 字段都是必填的
+   - 创建用户时，`username`、`password`、`name` 字段都是必填的
+   - 更新用户时，`username` 和 `name` 字段都是必填的
+
+4. **Redis 依赖**
+   - 本扩展包依赖 Redis 进行缓存和会话管理
+   - 请确保已安装 `predis/predis` 包：
+     ```bash
+     composer require predis/predis
+     ```
+   - 确保 Redis 服务已启动并可连接
+
+5. **数据库字符集**
+   - 建议使用 `utf8mb4` 字符集以支持中文和特殊字符
+   - 在 `.env` 文件中配置：
+     ```env
+     DB_CHARSET=utf8mb4
+     DB_COLLATION=utf8mb4_unicode_ci
+     ```
+
+6. **操作日志记录**
+   - 操作日志中间件会自动记录所有经过认证的请求
+   - 密码字段（`password`、`password_confirmation`）不会记录到日志中
+   - 如果 Token 无效或不存在，不会记录操作日志
+
+7. **权限检查中间件**
+   - 权限检查中间件需要 JWT Token 有效
+   - 如果 Token 无效或已过期，会返回 401 未授权错误
+   - 如果用户没有相应权限，会返回 403 禁止访问错误
+
+8. **默认密码安全**
+   - 系统初始化后的默认管理员密码为 `admin123`
+   - **⚠️ 请在生产环境中立即修改默认密码！**
+
+9. **API 响应格式**
+   - 所有 API 接口统一返回格式：
+     ```json
+     {
+         "code": 10000,
+         "message": "操作成功",
+         "data": {}
+     }
+     ```
+   - `code`: 10000 表示成功，20000 表示失败
+   - `message`: 操作结果消息
+   - `data`: 返回的数据
+
+10. **分页参数**
+    - 列表接口支持分页，默认每页 15 条记录
+    - 可通过 `per_page` 参数调整每页数量
+    - 可通过 `page` 参数指定页码
+
+11. **Swagger 文档生成**
+    - Swagger 文档生成目录默认为 `public/api-docs`
+    - 确保 `public/api-docs` 目录有写入权限
+    - 生成文档命令：
+      ```bash
+      php artisan l5-swagger:generate
+      ```
+
+12. **角色和权限关联**
+    - 用户可以拥有多个角色
+    - 角色可以拥有多个权限
+    - 权限检查时会检查用户所有角色的所有权限
+    - 用户拥有任意一个角色的任意一个权限即可访问
+
+13. **菜单树形结构**
+    - 菜单支持多级嵌套，通过 `parent_id` 字段关联
+    - `parent_id` 为 0 表示顶级菜单
+    - 删除菜单时，如果菜单下有子菜单，无法删除
+
+14. **单元测试环境**
+    - 单元测试需要在完整的 Laravel 环境中运行
+    - 测试文件中使用 `auth('admin')->login()` 是为了测试方便
+    - 在实际业务代码中应使用 `JWTAuth` 相关方法
+
+15. **缓存清理**
+    - 修改配置文件后，需要清理缓存：
+      ```bash
+      php artisan config:clear
+      php artisan cache:clear
+      php artisan optimize:clear
+      ```
+    - 修改代码后，建议清理路由缓存：
+      ```bash
+      php artisan route:clear
+      ```
+
 ## 版本历史
 
 ### 1.0.0 (2024-01-01)

@@ -48,7 +48,7 @@ return [
                 base_path('vendor/cheney/admin-system/src/Controllers'),
                 base_path('app/Http/Controllers'),
             ],
-            'docs' => storage_path('api-docs'),
+            'docs' => public_path('api-docs'),
             'interfaces' => base_path('app/Interfaces'),
             'traits' => base_path('app/Traits'),
             'helpers' => base_path('app/Helpers'),
@@ -91,7 +91,7 @@ return [
             'l5-swagger' => 'swagger::index',
         ],
         'files' => [
-            'generator' => storage_path('api-docs/swagger.json'),
+            'generator' => public_path('api-docs/swagger.json'),
         ],
         'algorithm' => null,
     ],

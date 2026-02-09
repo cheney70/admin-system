@@ -4,6 +4,7 @@ namespace Cheney\AdminSystem\Services;
 
 use Cheney\AdminSystem\Models\Menu;
 use Cheney\AdminSystem\Models\Permission;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class MenuService
 {
@@ -69,7 +70,7 @@ class MenuService
 
     public function userMenus()
     {
-        $admin = auth('admin')->user();
+        $admin = JWTAuth::parseToken()->authenticate();
         
         $permissionCodes = [];
         foreach ($admin->roles as $role) {

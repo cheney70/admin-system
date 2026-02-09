@@ -22,6 +22,7 @@ class CreateOperationLogsTable extends Migration
             $table->tinyInteger('status')->default(1)->comment('状态：1成功 0失败');
             $table->string('error_msg')->nullable()->comment('错误信息');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index('user_id');
             $table->index('created_at');

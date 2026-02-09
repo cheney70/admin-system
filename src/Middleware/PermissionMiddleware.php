@@ -5,6 +5,7 @@ namespace Cheney\AdminSystem\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Cheney\AdminSystem\Traits\ApiResponseTrait;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class PermissionMiddleware
 {
@@ -12,7 +13,7 @@ class PermissionMiddleware
 
     public function handle(Request $request, Closure $next, $permission)
     {
-        $admin = auth('admin')->user();
+        $admin = JWTAuth::parseToken()->authenticate();
         
         if (!$admin) {
             return $this->unauthorized();

@@ -5,6 +5,7 @@ namespace Cheney\AdminSystem\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Cheney\AdminSystem\Models\OperationLog;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class OperationLogMiddleware
 {
@@ -12,8 +13,8 @@ class OperationLogMiddleware
     {
         $response = $next($request);
         
-        if (auth('admin')->check()) {
-            $admin = auth('admin')->user();
+        try {
+            $admin = JWTAuth::parseToken()->authenticate();
             
             $route = $request->route();
             $action = $route ? $route->getActionName() : '';
@@ -37,6 +38,8 @@ class OperationLogMiddleware
                 'status' => $response->getStatusCode() < 400 ? 1 : 0,
                 'error_message' => $response->getStatusCode() >= 400 ? $response->getContent() : null,
             ]);
+        } catch (\Exception $e) {
+            // 如果 JWT token 无效或不存在，不记录操作日志
         }
         
         return $response;

@@ -35,7 +35,8 @@ class AuthService
             throw new AuthException('密码错误');
         }
 
-        $token = JWTAuth::fromUser($admin);
+        // 使用 admin guard 生成 token
+        $token = auth('admin')->fromUser($admin);
 
         $admin->update([
             'last_login_at' => now(),
@@ -45,43 +46,47 @@ class AuthService
         return [
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            'expires_in' => auth('admin')->factory()->getTTL() * 60,
             'user' => $this->getUserInfo($admin),
         ];
     }
 
     public function logout()
     {
-        JWTAuth::invalidate(JWTAuth::getToken());
+        auth('admin')->logout();
     }
 
     public function refresh()
     {
-        $token = JWTAuth::refresh(JWTAuth::getToken());
+        $token = auth('admin')->refresh();
         
         return [
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            'expires_in' => auth('admin')->factory()->getTTL() * 60,
         ];
     }
 
     public function me()
     {
-        $admin = JWTAuth::parseToken()->authenticate();
-        return $this->getUserInfo($admin);
+        $admin = auth('admin')->user();
+        return [
+            'user' => $this->getUserInfo($admin),
+        ];
     }
 
     public function updateProfile(array $data)
     {
-        $admin = JWTAuth::parseToken()->authenticate();
+        $admin = auth('admin')->user();
         $admin->update($data);
-        return $this->getUserInfo($admin->fresh());
+        return [
+            'user' => $this->getUserInfo($admin->fresh()),
+        ];
     }
 
     public function changePassword(array $data)
     {
-        $admin = JWTAuth::parseToken()->authenticate();
+        $admin = auth('admin')->user();
         
         if (!Hash::check($data['old_password'], $admin->password)) {
             throw new AuthException('原密码错误');

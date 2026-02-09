@@ -13,7 +13,7 @@ class PermissionMiddleware
 
     public function handle(Request $request, Closure $next, $permission)
     {
-        $admin = JWTAuth::parseToken()->authenticate();
+        $admin = auth('admin')->user();
         
         if (!$admin) {
             return $this->unauthorized();

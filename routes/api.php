@@ -8,7 +8,7 @@ use Cheney\AdminSystem\Controllers\PermissionController;
 use Cheney\AdminSystem\Controllers\MenuController;
 use Cheney\AdminSystem\Controllers\OperationLogController;
 
-Route::prefix('api/system')->middleware('cors')->group(function () {
+Route::prefix('system')->middleware('cors')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('login', [AuthController::class, 'login']);
         Route::post('logout', [AuthController::class, 'logout'])->middleware('jwt');
@@ -30,9 +30,9 @@ Route::prefix('api/system')->middleware('cors')->group(function () {
 
         Route::apiResource('permissions', PermissionController::class);
 
-        Route::apiResource('menus', MenuController::class);
-        Route::get('menus/tree', [MenuController::class, 'tree']);
         Route::get('menus/user', [MenuController::class, 'userMenus']);
+        Route::get('menus/tree', [MenuController::class, 'tree']);
+        Route::apiResource('menus', MenuController::class);
 
         Route::apiResource('operation-logs', OperationLogController::class)->only(['index', 'show', 'destroy']);
         Route::post('operation-logs/batch', [OperationLogController::class, 'batchDestroy']);

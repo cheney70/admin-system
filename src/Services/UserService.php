@@ -70,7 +70,7 @@ class UserService
     {
         $admin = $this->adminModel->findOrFail($id);
 
-        $currentAdmin = JWTAuth::parseToken()->authenticate();
+        $currentAdmin = auth('admin')->user();
         if ($admin->id === $currentAdmin->id) {
             throw new \Exception('不能删除当前登录用户');
         }

@@ -14,7 +14,7 @@ class OperationLogMiddleware
         $response = $next($request);
         
         try {
-            $admin = JWTAuth::parseToken()->authenticate();
+            $admin = auth('admin')->user();
             
             $route = $request->route();
             $action = $route ? $route->getActionName() : '';
@@ -39,7 +39,7 @@ class OperationLogMiddleware
                 'error_message' => $response->getStatusCode() >= 400 ? $response->getContent() : null,
             ]);
         } catch (\Exception $e) {
-            // 如果 JWT token 无效或不存在，不记录操作日志
+            // 如果用户未登录，不记录操作日志
         }
         
         return $response;

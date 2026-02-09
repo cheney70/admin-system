@@ -99,40 +99,40 @@ class AdminSystemServiceProvider extends ServiceProvider
     {
         $this->app->singleton('admin.auth', function ($app) {
             return new AuthService(
-                $app->make(Cheney\AdminSystem\Models\Admin::class)
+                $app->make(\Cheney\AdminSystem\Models\Admin::class)
             );
         });
 
         $this->app->singleton('admin.user', function ($app) {
             return new UserService(
-                $app->make(Cheney\AdminSystem\Models\Admin::class),
-                $app->make(Cheney\AdminSystem\Models\Role::class)
+                $app->make(\Cheney\AdminSystem\Models\Admin::class),
+                $app->make(\Cheney\AdminSystem\Models\Role::class)
             );
         });
 
         $this->app->singleton('admin.role', function ($app) {
             return new RoleService(
-                $app->make(Cheney\AdminSystem\Models\Role::class),
-                $app->make(Cheney\AdminSystem\Models\Permission::class)
+                $app->make(\Cheney\AdminSystem\Models\Role::class),
+                $app->make(\Cheney\AdminSystem\Models\Permission::class)
             );
         });
 
         $this->app->singleton('admin.permission', function ($app) {
             return new PermissionService(
-                $app->make(Cheney\AdminSystem\Models\Permission::class) 
+                $app->make(\Cheney\AdminSystem\Models\Permission::class) 
             );
         });
 
         $this->app->singleton('admin.menu', function ($app) {
             return new MenuService(
-                $app->make(Cheney\AdminSystem\Models\Menu::class),
-                $app->make(Cheney\AdminSystem\Models\Permission::class)
+                $app->make(\Cheney\AdminSystem\Models\Menu::class),
+                $app->make(\Cheney\AdminSystem\Models\Permission::class)
             );
         });
 
         $this->app->singleton('admin.operation-log', function ($app) {
             return new OperationLogService(
-                $app->make(Cheney\AdminSystem\Models\OperationLog::class)
+                $app->make(\Cheney\AdminSystem\Models\OperationLog::class)
             );
         });
     }

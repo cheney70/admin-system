@@ -68,9 +68,18 @@ class MenuService
         return $this->buildTree($menus->toArray());
     }
 
-    public function userMenus()
+    public function userMenus($admin = null)
     {
-        $admin = JWTAuth::parseToken()->authenticate();
+        if ($admin === null) {
+            $admin = auth('admin')->user();
+        }
+        
+        if (!$admin) {
+            throw new \Exception('用户未登录或token已过期');
+        }
+        
+        // 预加载角色和权限关联
+        $admin = $admin->load(['roles', 'roles.permissions']);
         
         $permissionCodes = [];
         foreach ($admin->roles as $role) {
@@ -93,8 +102,37 @@ class MenuService
             ->menuType()
             ->orderBy('sort')
             ->get();
+        
+        $menuIds = $menus->pluck('id')->toArray();
+        
+        $allMenuIds = $menuIds;
+        
+        foreach ($menuIds as $menuId) {
+            $parentIds = $this->getAllParentMenuIds($menuId);
+            $allMenuIds = array_merge($allMenuIds, $parentIds);
+        }
+        
+        $allMenuIds = array_unique($allMenuIds);
+        
+        $allMenus = $this->menuModel->whereIn('id', $allMenuIds)
+            ->active()
+            ->notHidden()
+            ->orderBy('sort')
+            ->get();
             
-        return $this->buildTree($menus->toArray());
+        return $this->buildTree($allMenus->toArray());
+    }
+    
+    protected function getAllParentMenuIds($menuId, &$parentIds = [])
+    {
+        $menu = $this->menuModel->find($menuId);
+        
+        if ($menu && $menu->parent_id > 0) {
+            $parentIds[] = $menu->parent_id;
+            $this->getAllParentMenuIds($menu->parent_id, $parentIds);
+        }
+        
+        return $parentIds;
     }
 
     protected function buildTree(array $elements, $parentId = 0)

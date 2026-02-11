@@ -4,7 +4,6 @@ namespace Cheney\AdminSystem\Services;
 
 use Cheney\AdminSystem\Models\Admin;
 use Cheney\AdminSystem\Models\Role;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Pagination\LengthAwarePaginator;
 

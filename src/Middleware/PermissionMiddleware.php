@@ -5,7 +5,6 @@ namespace Cheney\AdminSystem\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Cheney\AdminSystem\Traits\ApiResponseTrait;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class PermissionMiddleware
 {

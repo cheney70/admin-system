@@ -59,8 +59,6 @@ class AdminSystemServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->registerServiceProviders();
-
         $this->mergeConfigFrom(
             __DIR__ . '/../config/admin.php',
             'admin'
@@ -87,12 +85,6 @@ class AdminSystemServiceProvider extends ServiceProvider
         );
 
         $this->registerServices();
-    }
-
-    protected function registerServiceProviders()
-    {
-        $this->app->register(\Tymon\JWTAuth\Providers\LaravelServiceProvider::class);
-        $this->app->register(\L5Swagger\L5SwaggerServiceProvider::class);
     }
 
     protected function registerServices()

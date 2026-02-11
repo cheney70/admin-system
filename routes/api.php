@@ -7,8 +7,9 @@ use Cheney\AdminSystem\Controllers\RoleController;
 use Cheney\AdminSystem\Controllers\PermissionController;
 use Cheney\AdminSystem\Controllers\MenuController;
 use Cheney\AdminSystem\Controllers\OperationLogController;
+use Cheney\AdminSystem\Controllers\UploadController;
 
-Route::prefix('system')->middleware('cors')->group(function () {
+Route::prefix('api/system')->middleware('cors')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('login', [AuthController::class, 'login']);
         Route::post('logout', [AuthController::class, 'logout'])->middleware('jwt');
@@ -38,5 +39,7 @@ Route::prefix('system')->middleware('cors')->group(function () {
         Route::post('operation-logs/batch', [OperationLogController::class, 'batchDestroy']);
         Route::delete('operation-logs/clear', [OperationLogController::class, 'clear']);
         Route::get('operation-logs/export', [OperationLogController::class, 'export']);
+
+        Route::post('upload', [UploadController::class, 'upload']);
     });
 });

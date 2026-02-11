@@ -5,7 +5,6 @@ namespace Cheney\AdminSystem\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Cheney\AdminSystem\Models\OperationLog;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class OperationLogMiddleware
 {
@@ -13,7 +12,7 @@ class OperationLogMiddleware
     {
         $response = $next($request);
         
-        try {
+        if (auth('admin')->check()) {
             $admin = auth('admin')->user();
             
             $route = $request->route();
@@ -38,8 +37,6 @@ class OperationLogMiddleware
                 'status' => $response->getStatusCode() < 400 ? 1 : 0,
                 'error_message' => $response->getStatusCode() >= 400 ? $response->getContent() : null,
             ]);
-        } catch (\Exception $e) {
-            // 如果用户未登录，不记录操作日志
         }
         
         return $response;

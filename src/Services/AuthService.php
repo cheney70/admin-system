@@ -59,7 +59,8 @@ class AuthService
     public function refresh()
     {
         $token = auth('admin')->refresh();
-        
+        $admin = auth('admin')->user();
+
         return [
             'access_token' => $token,
             'token_type' => 'bearer',
@@ -70,18 +71,14 @@ class AuthService
     public function me()
     {
         $admin = auth('admin')->user();
-        return [
-            'user' => $this->getUserInfo($admin),
-        ];
+        return $this->getUserInfo($admin);
     }
 
     public function updateProfile(array $data)
     {
         $admin = auth('admin')->user();
         $admin->update($data);
-        return [
-            'user' => $this->getUserInfo($admin->fresh()),
-        ];
+        return $this->getUserInfo($admin->fresh());
     }
 
     public function changePassword(array $data)
@@ -99,6 +96,9 @@ class AuthService
 
     protected function getUserInfo($admin)
     {
+        // 预加载角色和权限关联
+        $admin = $admin->load(['roles', 'roles.permissions']);
+        
         $permissions = [];
         foreach ($admin->roles as $role) {
             foreach ($role->permissions as $permission) {
